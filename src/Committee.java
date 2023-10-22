@@ -1,7 +1,67 @@
+import java.util.Scanner;
+
 public class Committee {
     public static void main(String[] args) {
-        Person person = new Person();
-        System.out.println(person.getName());
+
+        Person person = new Person("Ralph");
+        int selection;
+        int position;
+        int edit;
+        Scanner scanner = new Scanner(System.in);
+        Student[] committee = new Student[5];
+
+        System.out.println("Create a committee of five students or undergraduates.");
+
+        for (int i = 0; i < committee.length; i++) {
+            System.out.println("\n1 - Student | 2 - Undergraduate");
+            selection = scanner.nextInt();
+            System.out.println("Enter name, student number, and level if applicable: ");
+            String name = scanner.next();
+            int studentNumber = scanner.nextInt();
+            if (selection == 1) {
+                committee[i] = new Student(name, studentNumber);
+            } else if (selection == 2) {
+                int level = scanner.nextInt();
+                committee[i] = new Undergraduate(name, studentNumber, level);
+            } else {
+                System.out.println("Invalid selection, try again.");
+                i--;
+                continue;
+            }
+        }
+
+        System.out.println("1 - Edit Entries | 0 - Close Program");
+        edit = scanner.nextInt();
+
+        while (edit == 1) {
+            System.out.print("\nSelect array position (1-5): ");
+            position = scanner.nextInt();
+
+            if (!(position > 0 && position < 6)) {
+                System.out.println("Invalid selection, try again.");
+                continue;
+            }
+
+            System.out.println("\n1 - Reset Attributes | 2 - Write Output | 3 - Compare Object");
+            selection = scanner.nextInt();
+            switch (selection) {
+                case 1:
+                    System.out.println("\nEnter new name, student number, and level if applicable:");
+                    committee[position].resetInput();
+                    continue;
+                case 2:
+                    committee[position].writeOutput();
+                    continue;
+                case 3:
+                    System.out.println("\nSelect array position (1-5): ");
+                    System.out.println("Result: " + committee[position].equals(committee[scanner.nextInt()]));
+                    continue;
+                default:
+                    System.out.println("Invalid selection, try again.");
+                    continue;
+            }
+        }
+        scanner.close();
     }
 }
 
@@ -54,6 +114,12 @@ class Student extends Person {
         return studentNumber;
     }
 
+    public void resetInput() {
+        Scanner scanner = new Scanner(System.in);
+        reset(scanner.nextLine(), scanner.nextInt());
+        scanner.close();
+    }
+
     public void reset(String newName, int newStudentNumber) {
         setName(newName);
         setStudentNumber(newStudentNumber);
@@ -92,6 +158,13 @@ class Undergraduate extends Student {
 
     public int getLevel() {
         return level;
+    }
+
+    @Override
+    public void resetInput() {
+        Scanner scanner = new Scanner(System.in);
+        reset(scanner.nextLine(), scanner.nextInt(), scanner.nextInt());
+        scanner.close();
     }
 
     public void reset(String newName, int newStudentNumber, int newLevel) {
